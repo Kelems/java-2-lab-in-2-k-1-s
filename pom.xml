@@ -5,12 +5,8 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>org.example</groupId>
-  <artifactId>java-2-lab-in-2-k-1-s</artifactId>
+  <artifactId>RestExample</artifactId>
   <version>1.0-SNAPSHOT</version>
-  <packaging>jar</packaging>
-
-  <name>java-2-lab-in-2-k-1-s</name>
-  <url>http://maven.apache.org</url>
 
   <properties>
     <maven.compiler.source>8</maven.compiler.source>
@@ -19,6 +15,7 @@
   </properties>
 
   <dependencies>
+
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-core</artifactId>
@@ -49,19 +46,11 @@
       <version>2.33</version>
     </dependency>
 
-    <!-- Servlet API -->
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>javax.servlet-api</artifactId>
       <version>4.0.1</version>
     </dependency>
-
-    <!-- JUnit для тестирования -->
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>3.8.1</version>
-      <scope>test</scope>
-    </dependency>
   </dependencies>
+
 </project>
