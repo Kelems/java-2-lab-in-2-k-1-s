@@ -1,6 +1,7 @@
 package org.example.library.domain;
 
 public class Book {
+    private Integer id;
     private String title; // Название книги
     private String author; // Автор / Авторы
     private String location; //местоположение книги
@@ -9,7 +10,8 @@ public class Book {
 
 
 // --------------------- Конструктор ---------------------
-    public Book(String title, String author, String location,boolean issued, boolean readingRoom) {
+    public Book(Integer id,String title, String author, String location,boolean issued, boolean readingRoom) {
+        this.id = id;
         this.title = title;
         this.author = author;
         this.location = location;
@@ -19,6 +21,9 @@ public class Book {
 
 
 // --------------------- Геттеры ---------------------
+    public Integer getId() {
+    return id;
+}
     public String getTitle() {
         return title;
     }
@@ -37,6 +42,9 @@ public class Book {
 
 
 // --------------------- Сеттеры ---------------------
+    public void setId(Integer id) {
+    this.id = id;
+}
     public void setTitle(String title) {
         this.title = title;
     }

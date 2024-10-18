@@ -20,12 +20,11 @@ public class BookRest {
 
     private static List<Book> books = new ArrayList<>();
 
-    public BookRest() {
-        books = new ArrayList<>();
+    static {
         // Пример инициализации списка книг
-        books.add(new Book("Война и мир", "Лев Толстой", "Стеллаж 1, Полка 2", false, false));
-        books.add(new Book("Преступление и наказание", "Федор Достоевский", "Стеллаж 2, Полка 3", false, true));
-        books.add(new Book("1984", "Джордж Оруэлл", "Стеллаж 3, Полка 1", true, false));
+        books.add(new Book(1,"Война и мир", "Лев Толстой", "Стеллаж 1, Полка 2", false, false));
+        books.add(new Book(2,"Преступление и наказание", "Федор Достоевский", "Стеллаж 2, Полка 3", false, true));
+        books.add(new Book(3,"1984", "Джордж Оруэлл", "Стеллаж 3, Полка 1", true, false));
     }
 
     public List<Book> findBooksByTitle(String title) {

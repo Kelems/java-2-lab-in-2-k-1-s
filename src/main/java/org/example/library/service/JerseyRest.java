@@ -15,9 +15,9 @@ public class JerseyRest {
     private static List<Book> books = new ArrayList<>();
 
     static {
-        books.add(new Book("Война и мир", "Лев Толстой", "Стеллаж 1, Полка 2", false, false));
-        books.add(new Book("Преступление и наказание", "Федор Достоевский", "Стеллаж 2, Полка 1", false, true));
-        books.add(new Book("1984", "Джордж Оруэлл", "Стеллаж 3, Полка 3", true, false));
+        books.add(new Book(1,"Война и мир", "Лев Толстой", "Стеллаж 1, Полка 2", false, false));
+        books.add(new Book(2,"Преступление и наказание", "Федор Достоевский", "Стеллаж 2, Полка 1", false, true));
+        books.add(new Book(3,"1984", "Джордж Оруэлл", "Стеллаж 3, Полка 3", true, false));
     }
 
     @GET
@@ -53,34 +53,5 @@ public class JerseyRest {
         books.add(book);
         String result = "Book saved: " + book.getTitle();
         return Response.status(201).entity(result).build();
-    }
-
-    @GET
-    @Path("/checkAvailability/{title}")
-    @Produces(MediaType.TEXT_PLAIN)
-    public Response checkAvailability(@PathParam("title") String title) {
-        Optional<Book> book = books.stream().filter(b -> b.getTitle().equals(title)).findFirst();
-        if (book.isPresent()) {
-            if (book.get().getIssued()) {
-                return Response.ok("Book is already issued").build();
-            } else if (book.get().getReadingRoom()) {
-                return Response.ok("Book is available only in reading room").build();
-            } else {
-                return Response.ok("Book is available for issue").build();
-            }
-        }
-        return Response.ok("Book not found").build();
-    }
-
-    @POST
-    @Path("/requestCopy")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.TEXT_PLAIN)
-    public Response requestCopy(Book book) {
-        Optional<Book> existingBook = books.stream().filter(b -> b.getTitle().equals(book.getTitle())).findFirst();
-        if (existingBook.isPresent()) {
-            return Response.ok("Copy request for " + book.getTitle() + " submitted").build();
-        }
-        return Response.ok("Book not found").build();
     }
 }
