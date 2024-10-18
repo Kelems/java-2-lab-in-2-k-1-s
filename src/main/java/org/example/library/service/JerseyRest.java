@@ -9,15 +9,16 @@ import javax.ws.rs.core.Response;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Path("/book")
 public class JerseyRest {
     private static List<Book> books = new ArrayList<>();
 
     static {
-        books.add(new Book(1,"Война и мир", "Лев Толстой", "Стеллаж 1, Полка 2", false, false));
-        books.add(new Book(2,"Преступление и наказание", "Федор Достоевский", "Стеллаж 2, Полка 1", false, true));
-        books.add(new Book(3,"1984", "Джордж Оруэлл", "Стеллаж 3, Полка 3", true, false));
+        books.add(new Book(1, "Война и мир", "Лев Толстой", "Стеллаж 1, Полка 2", false, false));
+        books.add(new Book(2, "Преступление и наказание", "Федор Достоевский", "Стеллаж 2, Полка 1", false, true));
+        books.add(new Book(3, "1984", "Джордж Оруэлл", "Стеллаж 3, Полка 3", true, false));
     }
 
     @GET
@@ -29,12 +30,28 @@ public class JerseyRest {
     }
 
     @GET
-    @Consumes(MediaType.TEXT_PLAIN)
-    @Produces(MediaType.TEXT_PLAIN)
-    public String msg() {
-        return "Hello, new user!";
+    @Path("/search/title")
+    @Produces({ MediaType.APPLICATION_JSON })
+    public Response searchByTitle(@QueryParam("title") String title) {
+        List<Book> result = books.stream()
+                .filter(book -> book.getTitle().contains(title))
+                .collect(Collectors.toList());
+        GenericEntity<List<Book>> entity = new GenericEntity<List<Book>>(result) {};
+        return Response.ok(entity).build();
     }
 
+    @GET
+    @Path("/search/author")
+    @Produces({ MediaType.APPLICATION_JSON })
+    public Response searchByAuthor(@QueryParam("author") String author) {
+        List<Book> result = books.stream()
+                .filter(book -> book.getAuthor().contains(author))
+                .collect(Collectors.toList());
+        GenericEntity<List<Book>> entity = new GenericEntity<List<Book>>(result) {};
+        return Response.ok(entity).build();
+    }
+
+    // Возвращает книгу по её ID
     @GET
     @Path("/fetch/{id}")
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
@@ -46,12 +63,14 @@ public class JerseyRest {
         return Response.ok().build();
     }
 
+    // Добавление книги
     @POST
     @Path("/add")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response addBook(Book book) {
         books.add(book);
-        String result = "Book saved: " + book.getTitle();
+        String result = "Книга внесена: " + book.getTitle();
         return Response.status(201).entity(result).build();
     }
+
 }

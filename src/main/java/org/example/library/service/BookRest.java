@@ -22,29 +22,14 @@ public class BookRest {
 
     static {
         // Пример инициализации списка книг
-        books.add(new Book(1,"Война и мир", "Лев Толстой", "Стеллаж 1, Полка 2", false, false));
-        books.add(new Book(2,"Преступление и наказание", "Федор Достоевский", "Стеллаж 2, Полка 3", false, true));
-        books.add(new Book(3,"1984", "Джордж Оруэлл", "Стеллаж 3, Полка 1", true, false));
-    }
-
-    public List<Book> findBooksByTitle(String title) {
-        return books.stream()
-                .filter(book -> book.getTitle().toLowerCase().contains(title.toLowerCase()))
-                .collect(Collectors.toList());
-    }
-
-    public List<Book> findBooksByAuthor(String author) {
-        return books.stream()
-                .filter(book -> book.getAuthor().toLowerCase().contains(author.toLowerCase()))
-                .collect(Collectors.toList());
-    }
-
-    public List<Book> getAllBooks() {
-        return new ArrayList<>(books);
+        books.add(new Book(1, "Война и мир", "Лев Толстой", "Стеллаж 1, Полка 2", false, false));
+        books.add(new Book(2, "Преступление и наказание", "Федор Достоевский", "Стеллаж 2, Полка 3", false, true));
+        books.add(new Book(3, "1984", "Джордж Оруэлл", "Стеллаж 3, Полка 1", true, false));
     }
 
     public static void main(String[] args) {
         try {
+// Вывод всех книг
             HttpServer httpServer = HttpServer.create(new InetSocketAddress(PORT), 0);
             httpServer.createContext("/book/list", httpExchange -> {
                 if ("GET".equals(httpExchange.getRequestMethod())) {
@@ -61,6 +46,58 @@ public class BookRest {
                     httpExchange.sendResponseHeaders(NOT_ALLOWED, -1);
                 }
             });
+
+// Поиск по названию
+            httpServer.createContext("/book/search/title", httpExchange -> {
+                if ("GET".equals(httpExchange.getRequestMethod())) {
+                    //находит по вписанному книгу
+                    //чувствителен к регистру
+                    String query = httpExchange.getRequestURI().getQuery();
+                    String title = query.split("=")[1];
+                    List<Book> result = books.stream()
+                            .filter(book -> book.getTitle().contains(title))
+                            .collect(Collectors.toList());
+                    //Используем результат поиска по аналогии с выводом всех книг
+                    httpExchange.getResponseHeaders().set("Content-Type", "application/json; charset=utf-8");
+                    httpExchange.sendResponseHeaders(OK, 0);
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    ObjectMapper mapper = new ObjectMapper();
+                    mapper.writeValue(baos, result);
+                    byte [] response = baos.toByteArray();
+                    OutputStream responseBody = httpExchange.getResponseBody();
+                    responseBody.write(response);
+                    responseBody.close();
+                } else {
+                    httpExchange.sendResponseHeaders(NOT_ALLOWED, -1);
+                }
+            });
+
+// Поиск по автору
+            httpServer.createContext("/book/search/author", httpExchange -> {
+                if ("GET".equals(httpExchange.getRequestMethod())) {
+                    //находит по вписанному автора
+                    //чувствителен к регистру
+                    String query = httpExchange.getRequestURI().getQuery();
+                    String author = query.split("=")[1];
+                    List<Book> result = books.stream()
+                            .filter(book -> book.getAuthor().contains(author))
+                            .collect(Collectors.toList());
+                    //Используем результат поиска по аналогии с выводом всех книг
+                    httpExchange.getResponseHeaders().set("Content-Type", "application/json; charset=utf-8");
+                    httpExchange.sendResponseHeaders(OK, 0);
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    ObjectMapper mapper = new ObjectMapper();
+                    mapper.writeValue(baos, result);
+                    byte [] response = baos.toByteArray();
+                    OutputStream responseBody = httpExchange.getResponseBody();
+                    responseBody.write(response);
+                    responseBody.close();
+                } else {
+                    httpExchange.sendResponseHeaders(NOT_ALLOWED, -1);
+                }
+            });
+
+
             httpServer.setExecutor(null);
             httpServer.start();
         } catch (IOException e) {
