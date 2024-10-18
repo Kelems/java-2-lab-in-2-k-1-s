@@ -8,6 +8,7 @@ import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -97,6 +98,29 @@ public class BookRest {
                 }
             });
 
+// Поиск по id
+            httpServer.createContext("/book/fetch", httpExchange -> {
+                if ("GET".equals(httpExchange.getRequestMethod())) {
+                    String path = httpExchange.getRequestURI().getPath();
+                    String id = path.substring(path.lastIndexOf('/') + 1);
+                    Optional<Book> book = books.stream().filter(b -> b.getId().toString().equals(id)).findFirst();
+                    if (book.isPresent()) {
+                        httpExchange.getResponseHeaders().set("Content-Type", "application/json; charset=utf-8");
+                        httpExchange.sendResponseHeaders(OK, 0);
+                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                        ObjectMapper mapper = new ObjectMapper();
+                        mapper.writeValue(baos, book.get());
+                        byte[] response = baos.toByteArray();
+                        OutputStream responseBody = httpExchange.getResponseBody();
+                        responseBody.write(response);
+                        responseBody.close();
+                    } else {
+                        httpExchange.sendResponseHeaders(OK, -1);
+                    }
+                } else {
+                    httpExchange.sendResponseHeaders(NOT_ALLOWED, -1);
+                }
+            });
 
             httpServer.setExecutor(null);
             httpServer.start();

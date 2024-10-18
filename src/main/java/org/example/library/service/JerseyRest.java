@@ -56,7 +56,7 @@ public class JerseyRest {
     @Path("/fetch/{id}")
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     public Response fetch(@PathParam("id") String id) {
-        Optional<Book> book = books.stream().filter(b -> b.getTitle().equals(id)).findFirst();
+        Optional<Book> book = books.stream().filter(b -> b.getId().equals(id)).findFirst();
         if (book.isPresent()) {
             return Response.ok(book.get()).build();
         }
