@@ -1,4 +1,4 @@
-package org.example.library.domain;
+package org.library.domain;
 
 public class Book {
     private Integer id;

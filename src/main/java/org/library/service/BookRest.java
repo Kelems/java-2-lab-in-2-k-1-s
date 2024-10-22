@@ -1,6 +1,6 @@
-package org.example.library.service;
+package org.library.service;
 
-import org.example.library.domain.Book;
+import org.library.domain.Book;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

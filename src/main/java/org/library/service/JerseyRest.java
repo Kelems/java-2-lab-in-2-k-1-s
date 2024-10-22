@@ -1,6 +1,6 @@
-package org.example.library.service;
+package org.library.service;
 
-import org.example.library.domain.Book;
+import org.library.domain.Book;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.GenericEntity;
@@ -55,7 +55,7 @@ public class JerseyRest {
     @GET
     @Path("/fetch/{id}")
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    public Response fetch(@PathParam("id") String id) {
+    public Response fetch(@PathParam("id") int id) {
         Optional<Book> book = books.stream().filter(b -> b.getId().equals(id)).findFirst();
         if (book.isPresent()) {
             return Response.ok(book.get()).build();
