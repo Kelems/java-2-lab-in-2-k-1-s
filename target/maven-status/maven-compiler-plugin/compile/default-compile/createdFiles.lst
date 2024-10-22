@@ -1,0 +1,7 @@
+org\library\service\BookRest.class
+org\library\service\JerseyRest$1.class
+org\library\config\ApplicationConfig.class
+org\library\service\JerseyRest$3.class
+org\library\domain\Book.class
+org\library\service\JerseyRest$2.class
+org\library\service\JerseyRest.class

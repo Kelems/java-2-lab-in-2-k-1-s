@@ -23,7 +23,7 @@ public class JerseyRest {
 
     @GET
     @Path("/list")
-    @Produces({ MediaType.APPLICATION_JSON })
+    @Produces({MediaType.APPLICATION_JSON})
     public Response getBooks() {
         GenericEntity<List<Book>> entity = new GenericEntity<List<Book>>(books) {};
         return Response.ok(entity).build();
@@ -31,7 +31,7 @@ public class JerseyRest {
 
     @GET
     @Path("/search/title")
-    @Produces({ MediaType.APPLICATION_JSON })
+    @Produces({MediaType.APPLICATION_JSON})
     public Response searchByTitle(@QueryParam("title") String title) {
         List<Book> result = books.stream()
                 .filter(book -> book.getTitle().contains(title))
@@ -42,7 +42,7 @@ public class JerseyRest {
 
     @GET
     @Path("/search/author")
-    @Produces({ MediaType.APPLICATION_JSON })
+    @Produces({MediaType.APPLICATION_JSON})
     public Response searchByAuthor(@QueryParam("author") String author) {
         List<Book> result = books.stream()
                 .filter(book -> book.getAuthor().contains(author))
@@ -51,10 +51,9 @@ public class JerseyRest {
         return Response.ok(entity).build();
     }
 
-    // Возвращает книгу по её ID
     @GET
     @Path("/fetch/{id}")
-    @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public Response fetch(@PathParam("id") int id) {
         Optional<Book> book = books.stream().filter(b -> b.getId().equals(id)).findFirst();
         if (book.isPresent()) {
@@ -63,7 +62,6 @@ public class JerseyRest {
         return Response.ok().build();
     }
 
-    // Добавление книги
     @POST
     @Path("/add")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -72,5 +70,4 @@ public class JerseyRest {
         String result = "Книга внесена: " + book.getTitle();
         return Response.status(201).entity(result).build();
     }
-
 }

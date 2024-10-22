@@ -1,11 +1,10 @@
 package org.library.config;
 
-import org.library.service.JerseyRest;
 import org.glassfish.jersey.server.ResourceConfig;
+import org.library.service.JerseyRest;
 
 public class ApplicationConfig extends ResourceConfig {
     public ApplicationConfig() {
         register(JerseyRest.class);
-//        packages("org.evil.service");
     }
 }
