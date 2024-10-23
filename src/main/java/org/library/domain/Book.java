@@ -10,7 +10,13 @@ public class Book {
 
 
 // --------------------- Конструктор ---------------------
-    public Book(Integer id,String title, String author, String location,boolean issued, boolean readingRoom) {
+
+    // Конструктор по умолчанию
+    public Book() {
+    }
+
+    // Конструктор с параметрами
+    public Book(Integer id, String title, String author, String location, boolean issued, boolean readingRoom) {
         this.id = id;
         this.title = title;
         this.author = author;
@@ -19,6 +25,18 @@ public class Book {
         this.readingRoom = readingRoom;
     }
 
+    //Переопределение для вывода книг в клиентском приложении
+    @Override
+    public String toString() {
+        return
+            "|| Id: " + id +
+            " || Название: '" + title + '\'' +
+            " || Автор(ы): " + author +
+            " || Местоположение: " + location  +
+            " || Выдается: " + issued +
+            " || Только в читальном зале: " + readingRoom + " ||"
+        ;
+    }
 
 // --------------------- Геттеры ---------------------
     public Integer getId() {
