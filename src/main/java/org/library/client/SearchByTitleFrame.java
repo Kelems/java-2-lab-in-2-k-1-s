@@ -11,63 +11,54 @@ import java.awt.event.ActionListener;
 import java.util.List;
 
 public class SearchByTitleFrame extends JFrame {
-    private JTextField searchField;
-    private JTextArea resultArea;
-    private JButton searchButton;
-
     private Client client;
+    private JTextField searchField;
+    private JButton searchButton;
+    private JTextArea resultArea;
 
+    // Клиент для отправки HTTP-запросов
     public SearchByTitleFrame() {
-        // Создаем клиента для отправки HTTP-запросов
         client = ClientBuilder.newClient();
         initUI();
     }
 
     private void initUI() {
-        // Устанавливаем заголовок окна
-        setTitle("Поиск по названию - 2 лабораторная работа - Струков Д.М.");
-        // Устанавливаем размер окна
-        setSize(850, 300);
-        // Устанавливаем действие при закрытии окна
-        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-        // Устанавливаем положение окна по центру экрана
-        setLocationRelativeTo(null);
+        setTitle("Поиск по названию - 2 лабораторная работа - Струков Д.М.");    // Заголовок окна
+        setSize(850, 200);                                          // Размер окна
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);                            // Кнопка закрытия
+        setLocationRelativeTo(null);                                            // Положение окна (в центре экрана)
 
         // Создаем панель для размещения компонентов
         JPanel panel = new JPanel();
         panel.setLayout(new BorderLayout());
 
-        // Создаем текстовое поле для ввода названия книги
+        // Создаем компоненты
         searchField = new JTextField();
-        // Создаем текстовую область для отображения результатов
         resultArea = new JTextArea();
         resultArea.setEditable(false);
-        // Создаем кнопку для поиска
-        searchButton = new JButton("Поиск");
+        searchButton = new JButton("Поиск");    // кнопка для поиска
 
-        // Добавляем слушатель событий для кнопки поиска
+        // Добавляем компоненты на панель
+        // часть поиска
+        panel.add(new JLabel("Поиск по названию:"), BorderLayout.NORTH);
+        panel.add(searchField, BorderLayout.CENTER);
+        panel.add(searchButton, BorderLayout.SOUTH);
+        // текстовая область вывода панели
+        JScrollPane scrollPane = new JScrollPane(resultArea);
+        getContentPane().add(panel, BorderLayout.NORTH);
+        getContentPane().add(scrollPane, BorderLayout.CENTER);
+
+        // Поиск книг по названию
         searchButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Выполняем поиск книг по названию
                 searchBooksByTitle();
             }
         });
 
-        // Добавляем компоненты на панель
-        panel.add(new JLabel("Поиск по названию:"), BorderLayout.NORTH);
-        panel.add(searchField, BorderLayout.CENTER);
-        panel.add(searchButton, BorderLayout.SOUTH);
-
-        // Создаем скролл-панель для текстовой области
-        JScrollPane scrollPane = new JScrollPane(resultArea);
-        // Добавляем панель и скролл-панель на главное окно
-        getContentPane().add(panel, BorderLayout.NORTH);
-        getContentPane().add(scrollPane, BorderLayout.CENTER);
     }
 
     private void searchBooksByTitle() {
-        // Получаем текст из поля ввода
         String title = searchField.getText();
         // Отправляем GET-запрос к сервису для поиска книг по названию
         Response response = client.target("http://localhost:8080/JavaLab/rest/book/search/title")
@@ -75,18 +66,15 @@ public class SearchByTitleFrame extends JFrame {
                 .request(MediaType.APPLICATION_JSON)
                 .get();
 
-        // Проверяем статус ответа
-        if (response.getStatus() == 200) {
+        if (response.getStatus() == 200) {  // если все успешно будет код 200
             // Получаем список книг из ответа
             List<Book> books = response.readEntity(new GenericType<List<Book>>() {});
-            // Очищаем текстовую область
-            resultArea.setText("");
             // Добавляем информацию о каждой книге в текстовую область
+            resultArea.setText("");
             for (Book book : books) {
                 resultArea.append(book.toString() + "\n");
             }
-        } else {
-            // Выводим сообщение об ошибке
+        } else {                            // Что-то пошло не так
             resultArea.setText("Ошибка: " + response.getStatus());
         }
     }

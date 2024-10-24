@@ -10,6 +10,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class AddBookFrame extends JFrame {
+    private Client client;
     private JTextField idField;
     private JTextField titleField;
     private JTextField authorField;
@@ -19,8 +20,6 @@ public class AddBookFrame extends JFrame {
     private JButton addButton;
     private JTextArea resultArea;
 
-    private Client client;
-
     public AddBookFrame() {
         // Создаем клиента для отправки HTTP-запросов
         client = ClientBuilder.newClient();
@@ -28,38 +27,26 @@ public class AddBookFrame extends JFrame {
     }
 
     private void initUI() {
-        // Устанавливаем заголовок окна
         setTitle("Добавить книгу в 'базу' - 2 лабораторная работа - Струков Д.М.");
-        // Устанавливаем размер окна
-        setSize(400, 300);
-        // Устанавливаем действие при закрытии окна
+        setSize(600, 250);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-        // Устанавливаем положение окна по центру экрана
         setLocationRelativeTo(null);
 
-        // Создаем панель для размещения компонентов
         JPanel panel = new JPanel();
-        panel.setLayout(new GridLayout(7, 2));
+        panel.setLayout(new GridLayout(6, 2));
 
         // Создаем текстовые поля и флажки для ввода данных о книге
         idField = new JTextField();
         titleField = new JTextField();
         authorField = new JTextField();
         locationField = new JTextField();
+        // чекбоксы
         issuedCheckBox = new JCheckBox("Арендуется");
         readingRoomCheckBox = new JCheckBox("Только в читальном зале");
+
         addButton = new JButton("Добавить");
         resultArea = new JTextArea();
         resultArea.setEditable(false);
-
-        // Добавляем слушатель событий для кнопки добавления
-        addButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // Выполняем добавление книги
-                addBook();
-            }
-        });
 
         // Добавляем компоненты на панель
         panel.add(new JLabel("ID:"));
@@ -70,15 +57,23 @@ public class AddBookFrame extends JFrame {
         panel.add(authorField);
         panel.add(new JLabel("Местоположение:"));
         panel.add(locationField);
+
         panel.add(issuedCheckBox);
         panel.add(readingRoomCheckBox);
-        panel.add(addButton);
 
-        // Создаем скролл-панель для текстовой области
+        panel.add(addButton);
+        panel.add(new JLabel("Результат внесения:"));
         JScrollPane scrollPane = new JScrollPane(resultArea);
-        // Добавляем панель и скролл-панель на главное окно
         getContentPane().add(panel, BorderLayout.NORTH);
         getContentPane().add(scrollPane, BorderLayout.CENTER);
+
+        // Добавляем книгу
+        addButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                addBook();
+            }
+        });
     }
 
     private void addBook() {
@@ -89,18 +84,15 @@ public class AddBookFrame extends JFrame {
             resultArea.setText("ID не может быть пустым");
             return;
         }
-
-        // Преобразуем текст в число
+        // Собираем данные
         Integer id = Integer.parseInt(idText);
-        // Получаем текст из остальных полей ввода
         String title = titleField.getText();
         String author = authorField.getText();
         String location = locationField.getText();
-        // Получаем состояние флажков
         boolean issued = issuedCheckBox.isSelected();
         boolean readingRoom = readingRoomCheckBox.isSelected();
 
-        // Создаем объект книги
+        // Закрепляем данные
         Book book = new Book(id, title, author, location, issued, readingRoom);
 
         // Отправляем POST-запрос к сервису для добавления книги
@@ -110,10 +102,8 @@ public class AddBookFrame extends JFrame {
 
         // Проверяем статус ответа
         if (response.getStatus() == 201) {
-            // Выводим сообщение об успешном добавлении
             resultArea.setText("Книга успешно добавлена: " + response.readEntity(String.class));
         } else {
-            // Выводим сообщение об ошибке
             resultArea.setText("Ошибка: " + response.getStatus());
         }
     }
