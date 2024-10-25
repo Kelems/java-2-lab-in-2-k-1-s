@@ -44,7 +44,10 @@ public class SearchByIdFrame extends JFrame {
         panel.add(new JLabel("Поиск по ID:"), BorderLayout.NORTH);
         panel.add(searchField, BorderLayout.CENTER);
         panel.add(searchButton, BorderLayout.SOUTH);
+        // текстовая область вывода панели
+        JScrollPane scrollPane = new JScrollPane(resultArea);
         getContentPane().add(panel, BorderLayout.NORTH);
+        getContentPane().add(scrollPane, BorderLayout.CENTER);
 
         // поиск книги по ID
         searchButton.addActionListener(new ActionListener() {
@@ -61,20 +64,22 @@ public class SearchByIdFrame extends JFrame {
             resultArea.setText("ID не может быть пустым");
             return;
         }
-        int id = Integer.parseInt(idText);    // Преобразуем текст в число
+
+        // Преобразуем текст в число
+        int id = Integer.parseInt(idText);
         // Отправляем GET-запрос к сервису для поиска книги по ID
         Response response = client.target("http://localhost:8080/JavaLab/rest/book/fetch/" + id)
                 .request(MediaType.APPLICATION_JSON)
                 .get();
-        if (response.getStatus() == 200) {  // если все успешно будет код 200
-            // Получаем список книг из ответа
-            java.util.List<Book> books = response.readEntity(new GenericType<List<Book>>() {});
-            // Добавляем информацию о каждой книге в текстовую область
-            resultArea.setText("");
-            for (Book book : books) {
-                resultArea.append(book.toString() + "\n");
-            }
-        } else {                            // Что-то пошло не так
+
+        // Проверяем статус ответа
+        if (response.getStatus() == 200) {
+            // Получаем книгу из ответа
+            Book book = response.readEntity(Book.class);
+            // Выводим информацию о книге в текстовую область
+            resultArea.setText(book.toString());
+        } else {
+            // Выводим сообщение об ошибке
             resultArea.setText("Ошибка: " + response.getStatus());
         }
     }
